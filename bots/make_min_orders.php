@@ -37,16 +37,21 @@
 			if (sizeof($open_orders)>1) {
 			
 				foreach ($open_orders as $order){
-				if ($order['type'] == 'buy' && $order['timestamp_created'] < (time()-(3600))) {
+				if ($order['type'] == 'buy' && $order['timestamp_created'] < (time()-(3600*6))) {
 						$output = $Adapter->cancel( $order['id'], array( "market" => $market_summary['market'] ) );
-						print_r($output)." ->  Cancel order  \n";
+						//print_r($output)." ->  Cancel order  \n";
 					}
-					if ($order['type'] == 'sell' && $order['timestamp_created'] < (time()-(3600*24))) {
+					if ($order['type'] == 'buy' && $order['price'] - $market_summary['bid'] < 0) {
 						$output = $Adapter->cancel( $order['id'], array( "market" => $market_summary['market'] ) );
-						print_r($output)." ->  Cancel order  \n";
+					}
+					if ($order['type'] == 'sell' && $order['timestamp_created'] < (time()-(3600*48))) {
+						$output = $Adapter->cancel( $order['id'], array( "market" => $market_summary['market'] ) );
+						//print_r($output)." ->  Cancel order  \n";
 					}
 				}
-			}								
+			}		
+			
+			
 				//_____get currencies/balances:
 				$market = $market_summary['market'];
 				$curs_bq = explode( "-", $market );
@@ -90,11 +95,11 @@
 				echo " -> sell price: $sell_price \n";
 				echo " -> spread: $spread \n";
 				echo " -> spread %: $spread_pct \n";
+				echo " ->24h high: ".$market_summary["high"]." \n";
+				echo " ->24h low: ".$market_summary["low"]." \n";
 
 				echo " -> final formatted buy price: $buy_price \n";
 				echo " -> final formatted sell price: $sell_price \n";
-				
-			
 				
 				if( floatval($buy_price) > 0 && $spread_pct > 5.0) { //some currencies have big sell wall at 0.00000001...
 					$order_size = Utilities::get_min_order_size( $market_summary['minimum_order_size_base'], 0.0001, $epsilon, $buy_price, $precision);
@@ -121,8 +126,8 @@
 						$base_bal-=$order_size;
 						//$sell_price+=$epsilon;
 				*/	
-					$order_size = $base_bal;
-					if( floatval($min_order_size) > $order_size){
+					$order_size = $min_order_size;
+					if( floatval($min_order_size) > floatval($base_bal)){
 					//	echo "\n\n -> base balance of $base_bal is too low for min sell order size of $order_size at sell price of $sell_price \n\n";
 					}else {
 						echo " -> selling $order_size in $market for $sell_price earning " . $order_size * $sell_price . " with base balance of $base_bal\n";

@@ -9,7 +9,7 @@
 
 		public static function get_min_order_size( $min_order_size_base, $min_order_size_quote, $epsilon, $price, $precision ) {
 			if( is_null( $min_order_size_base ) )
-				return bcdiv( $min_order_size_quote * 1.01, $price, $precision );//why is it always short when converting quote currency to base currency...
+				return bcdiv( $min_order_size_quote + $epsilon, $price, $precision );//why is it always short when converting quote currency to base currency...
 			else
 				return $min_order_size_base;
 		}

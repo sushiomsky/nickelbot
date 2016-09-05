@@ -8,14 +8,21 @@
 
 		//Get the symbol returned from Adapter:
 		private function get_market_symbol( $market ) {
-			$market = explode( "_", $market );
-			return $market[1] . "-" . $market[0];
+			$market_ = explode( "_", $market );
+			if (sizeof($market_== 2)) {
+				$market= $market_[1] . "-" . $market_[0];
+			}
+			return $market;
 		}
 		
 		//Get the symbol returned from native lib:
 		private function unget_market_symbol( $market ) {
-			$market = explode( "-", $market );
-			return $market[1] . "_" . $market[0];
+			$market_ = explode( "-", $market );
+			if (sizeof($market_== 2)) {
+				$market= $market_[1] . "_" . $market_[0];
+			}
+				
+			return $market;
 		}
 
 		public function get_info() {
@@ -191,6 +198,7 @@
 		}
 
 		public function get_open_orders( $market = "BTC-USD" ) {
+			//$marketswitch = explode( "-", $market );
 			$market = $this->unget_market_symbol( $market );
 			$orders = $this->exch->returnOpenOrders( $market );
 

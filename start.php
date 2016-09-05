@@ -41,17 +41,12 @@
 
 		 *****/
 
-		while(1) {
 			echo "\n\n***************************";
-			sleep(1);
+		//	sleep(1);
 			echo "\n***************************\n\n";
 
 			
 			make_min_orders( $Adapters );
-			sleep(300);
-
-		}
-
 		//build_cache( $Adapters );
 		//run_tests( $Adapters, $Tester );
 		//make_max_orders( $Adapters );
